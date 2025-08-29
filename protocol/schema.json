@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Psychological Emotive Tactics Emergency Response Protocol v1.0",
-  "description": "A comprehensive report with itemized, per-person analysis for impact, patterns, risks, and recommendations.",
+  "title": "Psychological Emotive Tactics Emergency Response Report v2.0",
+  "description": "An integrated analysis linking participant data with communication tactics.",
   "type": "object",
   "required": [
     "participants",
@@ -9,64 +9,156 @@
     "messageAnalysis"
   ],
   "properties": {
-    "dateOfAnalysis": { "type": "string", "format": "date-time", "default": "2025-03-14T09:56:00+09:30" },
     "participants": {
       "type": "array",
       "items": {
         "type": "object",
+        "required": [
+          "name",
+          "formalRole",
+          "participantAnalysis"
+        ],
         "properties": {
-          "name": { "type": "string" },
-          "initialRole": { "type": "string", "description": "Apparent role (e.g., Aggressor, Targeted Individual, Bystander)." }
+          "name": {
+            "type": "string"
+          },
+          "formalRole": {
+            "type": "string"
+          },
+          "participantAnalysis": {
+            "type": "object",
+            "required": [
+              "behavioralPatterns",
+              "impact",
+              "individualRecommendations"
+            ],
+            "properties": {
+              "behavioralPatterns": {
+                "type": "string"
+              },
+              "impact": {
+                "type": "string"
+              },
+              "individualRecommendations": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
         }
       }
     },
     "incidentAnalysis": {
       "type": "object",
-      "description": "A high-level summary of the overall incident, including per-person analysis.",
+      "required": [
+        "executiveSummary",
+        "keyInsights",
+        "organizationalRisks",
+        "organizationalRecommendations"
+      ],
       "properties": {
-        "executiveSummary": { "type": "string", "description": "A 1-2 sentence overview of the conflict and its outcome." },
-        "managementRiskAssessments": { "type": "array", "items": { "type": "string" }, "description": "An itemized list of forward-looking risks for the organization." },
-        "managementRecommendations": { "type": "array", "items": { "type": "string" }, "description": "Recommendations for the HR or Management team." },
-        "participantAnalyses": {
+        "executiveSummary": {
+          "type": "string"
+        },
+        "keyInsights": {
           "type": "array",
-          "description": "Individual analysis for each person involved in the incident.",
           "items": {
-            "type": "object",
-            "properties": {
-              "name": { "type": "string" },
-              "impactAssessment": { "type": "string", "description": "Assessment of the overall emotional and professional impact on this specific individual." },
-              "patternAnalysis": { "type": "string", "description": "Analysis of this person's recurring tactics or behavioral patterns." },
-              "individualRiskAssessments": { "type": "array", "items": { "type": "string" }, "description": "An itemized list of risks associated with this individual's behavior (e.g., flight risk, performance decline)." },
-              "individualRecommendations": { "type": "array", "items": { "type": "string" }, "description": "Tailored recommendations for this individual." }
-            }
+            "type": "string"
+          }
+        },
+        "organizationalRisks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "organizationalRecommendations": {
+          "type": "array",
+          "items": {
+            "type": "string"
           }
         }
       }
     },
     "messageAnalysis": {
       "type": "array",
-      "description": "A chronological, message-by-message breakdown of the conversation.",
       "items": {
         "type": "object",
-        "required": ["messageID", "speaker", "quote"],
+        "required": [
+          "messageID",
+          "speaker",
+          "message",
+          "identifiedTactics"
+        ],
         "properties": {
-          "messageID": { "type": "number", "description": "The sequential order of the message (1, 2, 3...)." },
-          "speaker": { "type": "string" },
-          "quote": { "type": "string" },
+          "messageID": {
+            "type": "integer"
+          },
+          "speaker": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The timestamp of the message, if available in the source data."
+          },
+          "message": {
+            "type": "string"
+          },
           "identifiedTactics": {
             "type": "array",
-            "description": "Tactics identified in this specific message.",
             "items": {
               "type": "object",
-              "required": ["tacticName", "tacticType", "justification"],
+              "required": [
+                "quote",
+                "tacticName",
+                "tacticCategory",
+                "speaker",
+                "target",
+                "likelyGoal",
+                "intendedImpact",
+                "impactScore",
+                "confidenceScore"
+              ],
               "properties": {
-                "tacticName": { "type": "string" },
-                "tacticType": { "type": "string", "enum": ["Toxic", "Constructive"] },
-                "justification": { "type": "string", "description": "Reasoning for why this message matches the tactic's definition." },
-                "confidence": { "type": "string", "enum": ["High", "Medium", "Low"] },
-                "severity": { "type": "string", "enum": ["High", "Medium", "Low"], "description": "Severity of the toxic tactic." },
-                "likelyGoal": { "type": "string", "description": "The likely strategic goal of the actor." },
-                "intendedImpact": { "type": "string", "description": "The likely intended impact on the target." }
+                "quote": {
+                  "type": "string"
+                },
+                "tacticName": {
+                  "type": "string"
+                },
+                "tacticCategory": {
+                  "type": "string",
+                  "description": "The broad category of the tactic (e.g., 'Aggressive & Controlling')."
+                },
+                "speaker": {
+                  "type": "string"
+                },
+                "target": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "The name(s) of the participant(s) at whom the tactic is directed."
+                },
+                "likelyGoal": {
+                  "type": "string"
+                },
+                "intendedImpact": {
+                  "type": "string"
+                },
+                "impactScore": {
+                  "type": "number",
+                  "minimum": -1.0,
+                  "maximum": 1.0
+                },
+                "confidenceScore": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
               }
             }
           }
