@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Psychological Emotive Tactics Emergency Response Report v2.0",
-  "description": "An integrated analysis linking participant data with communication tactics.",
+  "title": "Psychological Emotive Tactics Emergency Response Report v3.0",
+  "description": "An integrated analysis linking participant data with communication tactics, patterns, and psychological drivers.",
   "type": "object",
   "required": [
     "participants",
@@ -19,31 +19,27 @@
           "participantAnalysis"
         ],
         "properties": {
-          "name": {
-            "type": "string"
-          },
-          "formalRole": {
-            "type": "string"
-          },
+          "name": { "type": "string" },
+          "formalRole": { "type": "string" },
           "participantAnalysis": {
             "type": "object",
             "required": [
               "behavioralPatterns",
               "impact",
+              "inferredDrivers",
               "individualRecommendations"
             ],
             "properties": {
-              "behavioralPatterns": {
-                "type": "string"
-              },
-              "impact": {
-                "type": "string"
+              "behavioralPatterns": { "type": "string" },
+              "impact": { "type": "string" },
+              "inferredDrivers": {
+                "type": "array",
+                "description": "A synthesized list of the primary psychological drivers motivating this participant's behavior.",
+                "items": { "type": "string" }
               },
               "individualRecommendations": {
                 "type": "array",
-                "items": {
-                  "type": "string"
-                }
+                "items": { "type": "string" }
               }
             }
           }
@@ -59,25 +55,20 @@
         "organizationalRecommendations"
       ],
       "properties": {
-        "executiveSummary": {
-          "type": "string"
-        },
-        "keyInsights": {
+        "executiveSummary": { "type": "string" },
+        "keyInsights": { "type": "array", "items": { "type": "string" } },
+        "organizationalRisks": { "type": "array", "items": { "type": "string" } },
+        "organizationalRecommendations": { "type": "array", "items": { "type": "string" } },
+        "identifiedPatterns": {
           "type": "array",
+          "description": "Descriptions of multi-tactic conversational patterns observed during the incident.",
           "items": {
-            "type": "string"
-          }
-        },
-        "organizationalRisks": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "organizationalRecommendations": {
-          "type": "array",
-          "items": {
-            "type": "string"
+            "type": "object",
+            "properties": {
+              "patternName": { "type": "string" },
+              "description": { "type": "string" },
+              "messageIDs": { "type": "array", "items": { "type": "integer" } }
+            }
           }
         }
       }
@@ -93,20 +84,10 @@
           "identifiedTactics"
         ],
         "properties": {
-          "messageID": {
-            "type": "integer"
-          },
-          "speaker": {
-            "type": "string"
-          },
-          "timestamp": {
-            "type": "string",
-            "format": "date-time",
-            "description": "The timestamp of the message, if available in the source data."
-          },
-          "message": {
-            "type": "string"
-          },
+          "messageID": { "type": "integer" },
+          "speaker": { "type": "string" },
+          "timestamp": { "type": "string", "format": "date-time" },
+          "message": { "type": "string" },
           "identifiedTactics": {
             "type": "array",
             "items": {
@@ -117,48 +98,27 @@
                 "tacticCategory",
                 "speaker",
                 "target",
-                "likelyGoal",
-                "intendedImpact",
+                "purpose",
+                "likelyDriver",
                 "impactScore",
                 "confidenceScore"
               ],
               "properties": {
-                "quote": {
-                  "type": "string"
-                },
-                "tacticName": {
-                  "type": "string"
-                },
-                "tacticCategory": {
+                "quote": { "type": "string" },
+                "tacticName": { "type": "string" },
+                "tacticCategory": { "type": "string" },
+                "speaker": { "type": "string" },
+                "target": { "type": "array", "items": { "type": "string" } },
+                "purpose": {
                   "type": "string",
-                  "description": "The broad category of the tactic (e.g., 'Aggressive & Controlling')."
+                  "description": "An integrated description of the tactic's goal and its intended impact on the target."
                 },
-                "speaker": {
-                  "type": "string"
+                "likelyDriver": {
+                  "type": "string",
+                  "description": "The most probable psychological driver from the library that motivates the tactic."
                 },
-                "target": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "description": "The name(s) of the participant(s) at whom the tactic is directed."
-                },
-                "likelyGoal": {
-                  "type": "string"
-                },
-                "intendedImpact": {
-                  "type": "string"
-                },
-                "impactScore": {
-                  "type": "number",
-                  "minimum": -1.0,
-                  "maximum": 1.0
-                },
-                "confidenceScore": {
-                  "type": "number",
-                  "minimum": 0,
-                  "maximum": 1
-                }
+                "impactScore": { "type": "number", "minimum": -1.0, "maximum": 1.0 },
+                "confidenceScore": { "type": "number", "minimum": 0, "maximum": 1 }
               }
             }
           }
