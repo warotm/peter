@@ -1,8 +1,4 @@
-Given that Peter is the software engineering team manager and others are software engineers under his management.
-
-## From team chat:
-
-Peter
+Peter [2025-03-14 09:56]
 
 > hi team, there are 2 weeks away from the end of the High Flyer nomination on Employment Hero.
 > 
@@ -14,22 +10,22 @@ Peter
 > Let's consolidate our effort and give Koleh the spotlight he deserves, if he wins, we will all split the prize money equally amongst all of us, so $3.50 / 8 people = 43.75 cents each! Either that or Korean BBQ on Koleh.
 > 
 
-James P
+James P [2025-03-14 09:57]
 
 > Or Koleh get everything like he deserves
 > 
 
-Koleh
+Koleh [2025-03-14 10:01]
 
 > Korean BBQ yum yum
 > 
 
-Mai
+Mai [2025-03-14 10:05]
 
 > I honestly believe that Koleh David deserves to win. -> Would you mind giving a few reasons that make you honestly believe this in comparison with the rest of the team members? So I may use them as a guide to meet your expectations.
 > 
 
-Peter
+Peter [2025-03-14 10:24]
 
 > hi Mai, it goes without saying that everyone deserves to win. This is evident when I joined AMX and nominated everyone on our team, as shown on EH history. In fact I also encouraged others on the team to nominate for those OUTSIDE of our team (e.g. Rickson) to provide the spotlight for the hard work they've done behind the scene, and indeed they won the award.
 > 
@@ -41,7 +37,7 @@ Peter
 > If you would like to know a guide to meet my expectations, my expectation during this difficult time at AMX (you yourself are going through a difficult time as well), is to support each other, have each other back, and be a force multiplier for others. Comments that sow divisions are destructive, and goes against our spirit in this team. I strongly suggest to think twice before posting similar messages on group chat.
 > 
 
-Mai
+Mai [2025-03-14 13:43]
 
 > Your response was absolutely beyond my expectations.
 > 
@@ -55,7 +51,7 @@ PS. I'm so glad that I finished some work prior to reading the response.
 > 
 > 
 
-Peter
+Peter [2025-03-14 14:20]
 
 > hi Mai, you do have some valid points there. There seems to be a bit of miscommunications with the message being conveyed. I first apologise to everyone being involved, but I think it addresses the team culture we're all trying to set here, so here are the key points:
 > 
@@ -71,7 +67,7 @@ I'm always available if you need a chat or clarify any of the points above. Ther
 > 
 > 
 
-Mai
+Mai [2025-03-14 17:30]
 
 > To protect myself and make everything as transparent as it could be.
 This is what Peter sent me in 1-on-1 chat this following afternoon.
