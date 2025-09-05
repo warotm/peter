@@ -1,0 +1,68 @@
+name: n8n
+services:
+  n8n:
+    # image: n8nio/n8n
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM docker.n8n.io/n8nio/n8n
+
+        USER root
+        RUN apk add --no-cache pandoc
+        
+        RUN apk add --no-cache \
+        texlive \
+        texmf-dist-latexextra \
+        texmf-dist-mathscience && \
+        rm -vfr /var/cache/apk/*
+
+        USER node
+        RUN npm install @couleetech/n8n-nodes-pandoc
+    container_name: n8n
+    restart: always
+    ports:
+      - '80:80'
+      - '443:443'
+    environment:
+      - GENERIC_TIMEZONE=Australia/Adelaide
+      - TZ=Australia/Adelaide
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - N8N_RUNNERS_ENABLED=true
+      # - N8N_PROTOCOL=https
+      # - N8N_PORT=443
+      - N8N_SECURE_COOKIE=false
+      - N8N_PORT=80
+      - N8N_EDITOR_BASE_URL=http://34.172.186.102/
+      - WEBHOOK_URL=http://34.172.186.102/
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_HOST=db
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_USER=n8n
+      - DB_POSTGRESDB_SCHEMA=n8n
+      - DB_POSTGRESDB_PASSWORD=n8n
+    volumes:
+      - n8n_data:/home/node/.n8n
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  db:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: n8n
+      POSTGRES_USER: n8n
+      POSTGRES_PASSWORD: n8n
+    # ports:
+    #   - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  n8n_data:
+    name: n8n_data
+    external: true
+  db_data:
+    name: db_data
+    external: true
