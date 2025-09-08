@@ -4,7 +4,7 @@
 
 P.E.T.E.R. is a web-based tool that uses Google's Gemini AI to analyse conversation transcripts. It identifies specific psychological and emotive tactics used by participants to provide an objective, high-level view of communication dynamics.
 
-**P.E.T.E.R.** stands for **Psychological Emotive Tactics Emergency Response**.
+**P.E.T.E.R.** stands for **Personal Empowerment Through Evidentiary Reclamation**.
 
 ## The Story Behind P.E.T.E.R.
 
@@ -30,7 +30,7 @@ The process is straightforward:
 
 1.  The user pastes an anonymised conversation transcript into the text area.
 2.  The application formats the text and sends it to the Gemini API with a specialised prompt.
-3.  The Gemini API analyses the text based on the **Psychological Emotive Tactics Emergency Response** framework.
+3.  The Gemini API analyses the text based on the **Personal Empowerment Through Evidentiary Reclamation** framework.
 4.  The application receives the analysis from the API.
 5.  The results are formatted and presented to the user, with an option to download as a PDF.
 
