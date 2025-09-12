@@ -5,6 +5,7 @@ You must follow the structure, formatting, and instructions below precisely. Do 
 **Important Rules:**
 1. If any data array in the JSON (e.g., `keyInsights`, `organizationalRisks`, `identifiedTactics`) is empty or not present, omit its corresponding heading and section entirely to avoid empty sections.
 2. If entire analysis components are missing from the JSON (such as `incidentAnalysis`, `participants`, or organizational data), omit those corresponding sections entirely from the report.
+3. **Message Order**: The order of messages must be preserved exactly as provided in the original transcript for proper analysis flow.
 
 ### **Required Output Structure & Instructions**
 

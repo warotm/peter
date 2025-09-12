@@ -18,5 +18,7 @@ Analyze each participant in the conversation and provide:
 * **Inferred Drivers**: Identify the psychological drivers that likely motivate each participant's behavior.
 * **Individual Recommendations**: Provide specific recommendations for each participant to improve their communication effectiveness.
 
+* **Write all descriptive fields (e.g., `executiveSummary`, `behavioralPatterns`, `purpose`) in clear, direct, and jargon-free language, as if for an intelligent but non-expert audience.**
+
 ### 2. Final Output
 Ensure the single JSON object you have built is complete and perfectly valid according to the schema.

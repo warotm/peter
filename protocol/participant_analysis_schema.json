@@ -23,13 +23,13 @@
             "type": "object",
             "required": [
               "behavioralPatterns",
-              "impact",
+              "conversationalImpact",
               "inferredDrivers",
               "individualRecommendations"
             ],
             "properties": {
               "behavioralPatterns": { "type": "string" },
-              "impact": { "type": "string" },
+              "conversationalImpact": { "type": "string" },
               "inferredDrivers": {
                 "type": "array",
                 "description": "A synthesized list of the primary psychological drivers motivating this participant's behavior.",

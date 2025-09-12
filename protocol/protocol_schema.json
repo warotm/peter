@@ -86,7 +86,6 @@
         "properties": {
           "messageID": { "type": "integer" },
           "speaker": { "type": "string" },
-          "timestamp": { "type": "string" },
           "message": { "type": "string" },
           "identifiedTactics": {
             "type": "array",

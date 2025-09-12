@@ -18,5 +18,7 @@ Analyze the conversation as a complete incident and provide:
 * **Organizational Risks**: A list of potential risks to the organization that stem from this incident.
 * **Organizational Recommendations**: A list of actionable recommendations for preventing similar incidents and improving communication processes.
 
+* **Write all descriptive fields (e.g., `executiveSummary`, `behavioralPatterns`, `purpose`) in clear, direct, and jargon-free language, as if for an intelligent but non-expert audience.**
+
 ### 2. Final Output
 Ensure the single JSON object you have built is complete and perfectly valid according to the schema.
