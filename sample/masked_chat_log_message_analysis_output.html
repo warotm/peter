@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Message Analysis</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            background-color: #f0f2f5;
+            color: #333;
+            padding: 20px;
+            line-height: 1.5;
+            margin: 0;
+        }
+        .canvas-frame {
+            background-color: #ffffff;
+            padding: 20px 10px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            max-width: 860px;
+            margin: 20px auto;
+            border: 1px solid #e0e0e0;
+        }
+        h1, .intro { text-align: center; color: #444; padding: 0 20px; }
+        .intro { margin-bottom: 20px; }
+        .legend {
+            display: flex; flex-wrap: wrap; justify-content: center;
+            gap: 20px; margin-bottom: 30px; padding: 10px 20px; font-size: 14px;
+        }
+        .legend-item { display: flex; align-items: center; gap: 8px; }
+        .legend-color-box {
+            width: 16px; height: 16px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.1);
+        }
+        .chat-log { max-width: 800px; margin: 0 auto; background-color: #ffffff; padding: 20px 30px; }
+        .message { margin-bottom: 24px; }
+        .speaker { font-weight: bold; margin-bottom: 5px; }
+        .speaker-nominee { color: #d32f2f; }
+        .speaker-team-lead { color: #1976d2; }
+        .speaker-team-member-a { color: #388e3c; }
+        .speaker-team-member-b { color: #f57c00; }
+
+        .message-content { line-height: 1.6; word-wrap: break-word; }
+        .message-content blockquote {
+            border-left: 3px solid #e0e0e0; padding-left: 15px; margin: 10px 0 10px 5px;
+            color: #666; font-style: italic;
+        }
+        .has-tactic {
+            position: relative; text-decoration: underline; text-decoration-style: dashed;
+            cursor: pointer; /* Changed from 'help' to 'pointer' for better touch affordance */
+            border-radius: 3px; padding: 1px 2px;
+        }
+
+        .tactic-aggressive--controlling { background-color: rgba(239, 68, 68, 0.15); text-decoration-color: #ef4444; }
+        .tactic-aggressive--controlling .tooltip-text strong { color: #ef4444; }
+        .tactic-constructive { background-color: rgba(168, 85, 247, 0.15); text-decoration-color: #a855f7; }
+        .tactic-constructive .tooltip-text strong { color: #a855f7; }
+        .tactic-distortion--deception { background-color: rgba(249, 115, 22, 0.15); text-decoration-color: #f97316; }
+        .tactic-distortion--deception .tooltip-text strong { color: #f97316; }
+        .tactic-guiding-the-conversation { background-color: rgba(245, 158, 11, 0.15); text-decoration-color: #f59e0b; }
+        .tactic-guiding-the-conversation .tooltip-text strong { color: #f59e0b; }
+        .tactic-passive-aggressive { background-color: rgba(34, 197, 94, 0.15); text-decoration-color: #22c55e; }
+        .tactic-passive-aggressive .tooltip-text strong { color: #22c55e; }
+        .tactic-social--relational { background-color: rgba(59, 130, 246, 0.15); text-decoration-color: #3b82f6; }
+        .tactic-social--relational .tooltip-text strong { color: #3b82f6; }
+        .tooltip-text {
+            visibility: hidden; width: 320px; background-color: #263238; color: #fff;
+            text-align: left; border-radius: 6px; padding: 12px; position: absolute;
+            z-index: 1; bottom: 130%; left: 50%; margin-left: -160px; opacity: 0;
+            transition: opacity 0.3s; font-size: 14px; line-height: 1.4;
+            text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2); white-space: normal;
+        }
+        .tooltip-text::after {
+            content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px;
+            border-width: 5px; border-style: solid; border-color: #263238 transparent transparent transparent;
+        }
+        /* Show tooltip on hover (for desktop) OR when 'show-tooltip' class is added by JS (for touch/click) */
+        .has-tactic:hover .tooltip-text,
+        .has-tactic.show-tooltip .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        .tooltip-text strong { display: block; margin-bottom: 2px; }
+        .tooltip-text .tactic-category, .tooltip-text .tactic-driver {
+            font-size: 0.85em; font-style: italic; color: #b0bec5; margin-bottom: 8px;
+        }
+        .tooltip-text .tactic-purpose { margin-bottom: 8px; }
+        .impact-positive { color: #81c784; font-weight: bold; }
+        .impact-negative { color: #e57373; font-weight: bold; }
+    </style>
+</head>
+<body>
+    
+    <div class="canvas-frame">
+        <h1>Chat Message Analysis</h1>
+        <p class="intro">Hover over the highlighted text to see the identified communication tactics.</p>
+        <div class="legend"><div class="legend-item"><div class="legend-color-box" style="background-color: rgba(239, 68, 68, 0.15);"></div>Aggressive & Controlling</div><div class="legend-item"><div class="legend-color-box" style="background-color: rgba(168, 85, 247, 0.15);"></div>Constructive</div><div class="legend-item"><div class="legend-color-box" style="background-color: rgba(249, 115, 22, 0.15);"></div>Distortion & Deception</div><div class="legend-item"><div class="legend-color-box" style="background-color: rgba(245, 158, 11, 0.15);"></div>Guiding the Conversation</div><div class="legend-item"><div class="legend-color-box" style="background-color: rgba(34, 197, 94, 0.15);"></div>Passive-Aggressive</div><div class="legend-item"><div class="legend-color-box" style="background-color: rgba(59, 130, 246, 0.15);"></div>Social & Relational</div></div>
+        <div class="chat-log">
+            <!-- Message 1 -->
+            <div class="message">
+                <div class="speaker speaker-team-lead">Team Lead</div>
+                <div class="message-content">hi team, there are 2 weeks away from the end of the [Top Achiever Award] nomination on the [Company Hub].<br><br>No one from our team has won an award since forever, <span class="has-tactic tactic-social--relational">we know it&#x27;s rigged, but....<span class="tooltip-text"><br>        <strong>Manipulative Appeal</strong><br>        <div class="tactic-category">Category: Social &amp; Relational</div><br>        <div class="tactic-purpose">Appeals to the team&#x27;s shared cynicism about the &quot;rigged&quot; award to build unity around the goal of nominating a specific person, bypassing a merit-based discussion.</div><br>        <div class="tactic-driver">Likely Driver: Need for Control</div><br>        <div><span>Impact Score: </span><span class="impact-negative">-0.3</span></div><br>        <div><span>Confidence: </span><span>95.0%</span></div><br>    </span></span><br><br>I honestly believe that [Nominee] deserves to win. He was nominated last quarter but did not win (again, it&#x27;s rigged, I know).<br><br>Let&#x27;s consolidate our effort and give [Nominee] the spotlight he deserves, <span class="has-tactic tactic-social--relational">if he wins, we will all split the prize money equally amongst all of us, so [Token Prize Value] / 8 people = [Small Payout] each!<span class="tooltip-text"><br>        <strong>Manipulative Appeal</strong><br>        <div class="tactic-category">Category: Social &amp; Relational</div><br>        <div class="tactic-purpose">Uses a direct financial incentive (bribery) to pressure the team into compliance, shifting the motivation from genuine recognition to personal monetary gain.</div><br>        <div class="tactic-driver">Likely Driver: Need for Control</div><br>        <div><span>Impact Score: </span><span class="impact-negative">-0.5</span></div><br>        <div><span>Confidence: </span><span>100.0%</span></div><br>    </span></span> Either that or Korean BBQ on [Nominee].</div>
+            </div>
+        
+            <!-- Message 2 -->
+            <div class="message">
+                <div class="speaker speaker-team-member-b">Team Member B</div>
+                <div class="message-content">Or [Nominee] get everything like he deserves</div>
+            </div>
+        
+            <!-- Message 3 -->
+            <div class="message">
+                <div class="speaker speaker-nominee">Nominee</div>
+                <div class="message-content">Korean BBQ yum yum</div>
+            </div>
+        
+            <!-- Message 4 -->
+            <div class="message">
+                <div class="speaker speaker-team-member-a">Team Member A</div>
+                <div class="message-content">I honestly believe that [Nominee] deserves to win. -&gt; <span class="has-tactic tactic-constructive">Would you mind giving a few reasons that make you honestly believe this in comparison with the rest of the team members?<span class="tooltip-text"><br>        <strong>Seeking to Understand</strong><br>        <div class="tactic-category">Category: Constructive &amp; De-escalating</div><br>        <div class="tactic-purpose">Genuinely asks for clarification to understand the Team Lead&#x27;s reasoning, shifting the conversation from a subjective statement to a request for objective justification.</div><br>        <div class="tactic-driver">Likely Driver: Desire for Collaboration</div><br>        <div><span>Impact Score: </span><span class="impact-positive">+0.2</span></div><br>        <div><span>Confidence: </span><span>100.0%</span></div><br>    </span></span> <span class="has-tactic tactic-constructive">So I may use them as a guide to meet your expectations.<span class="tooltip-text"><br>        <strong>Stating Positive Intent</strong><br>        <div class="tactic-category">Category: Constructive &amp; De-escalating</div><br>        <div class="tactic-purpose">Frames a challenging question with a constructive goal (professional development), making it more difficult for the other party to dismiss as an attack.</div><br>        <div class="tactic-driver">Likely Driver: Desire for Collaboration</div><br>        <div><span>Impact Score: </span><span class="impact-positive">+0.3</span></div><br>        <div><span>Confidence: </span><span>90.0%</span></div><br>    </span></span></div>
+            </div>
+        
+            <!-- Message 5 -->
+            <div class="message">
+                <div class="speaker speaker-team-lead">Team Lead</div>
+                <div class="message-content">hi [Team Member A], it goes without saying that everyone deserves to win. This is evident when I joined [NextGen Corp] and nominated everyone on our team, as shown on the [Company Hub] history. In fact I also encouraged others on the team to nominate for those OUTSIDE of our team (e.g. [External Colleague]) to provide the spotlight for the hard work they&#x27;ve done behind the scene, and indeed they won the award.<br><br>The reality is, when everyone on a team gets nominated, it does not sound genuine, and no one gets the win. It mostly falls to the [Deployment Group] or [Client-Facing Unit]. Does that mean that they deserve the win more than us? Maybe, maybe not, we&#x27;re not the judge, we&#x27;re here to support each other in our team.<br><br>If you ask me &quot;Would you mind giving a few reasons that make you honestly believe this in comparison with the rest of the team members?&quot;, <span class="has-tactic tactic-distortion--deception">this sentence causes division amongst our team.<span class="tooltip-text"><br>        <strong>Blame-Shifting</strong><br>        <div class="tactic-category">Category: Distortion &amp; Deception</div><br>        <div class="tactic-purpose">Unfairly places responsibility for creating &quot;division&quot; onto the team member asking a reasonable question, in order to evade accountability for their own directive.</div><br>        <div class="tactic-driver">Likely Driver: Ego Protection</div><br>        <div><span>Impact Score: </span><span class="impact-negative">-0.8</span></div><br>        <div><span>Confidence: </span><span>100.0%</span></div><br>    </span></span> <span class="has-tactic tactic-aggressive--controlling">Is it your intention that we just don&#x27;t nominate anyone, or everyone gets nominated and we fall back to my previous point about no one gets the win.<span class="tooltip-text"><br>        <strong>Derailing</strong><br>        <div class="tactic-category">Category: Aggressive &amp; Controlling</div><br>        <div class="tactic-purpose">Destructively dismisses the original question by presenting a false, undesirable choice, thus avoiding the need to provide a direct answer.</div><br>        <div class="tactic-driver">Likely Driver: Need for Control</div><br>        <div><span>Impact Score: </span><span class="impact-negative">-0.7</span></div><br>        <div><span>Confidence: </span><span>100.0%</span></div><br>    </span></span> <span class="has-tactic tactic-social--relational">This sentence also will make [Nominee] (or anyone else we want to consolidate our efforts in nomination) feel bad if he indeed gets the win.<span class="tooltip-text"><br>        <strong>Manipulative Appeal</strong><br>        <div class="tactic-category">Category: Social &amp; Relational</div><br>        <div class="tactic-purpose">Uses an appeal to guilt by making the team member feel responsible for the potential negative emotions of a colleague, pressuring them to drop their valid concern.</div><br>        <div class="tactic-driver">Likely Driver: Need for Control</div><br>        <div><span>Impact Score: </span><span class="impact-negative">-0.7</span></div><br>        <div><span>Confidence: </span><span>100.0%</span></div><br>    </span></span><br><br>If you would like to know a guide to meet my expectations, my expectation during this difficult time at [NextGen Corp] (you yourself are going through a difficult time as well), is to support each other, have each other back, and be a force multiplier for others. Comments that sow divisions are destructive, and goes against our spirit in this team. <span class="has-tactic tactic-aggressive--controlling">I strongly suggest to think twice before posting similar messages on group chat.<span class="tooltip-text"><br>        <strong>Intimidation</strong><br>        <div class="tactic-category">Category: Aggressive &amp; Controlling</div><br>        <div class="tactic-purpose">Issues a veiled threat under the guise of &quot;strong suggestion&quot; to warn against future challenges and silence dissent.</div><br>        <div class="tactic-driver">Likely Driver: Ego Protection</div><br>        <div><span>Impact Score: </span><span class="impact-negative">-0.9</span></div><br>        <div><span>Confidence: </span><span>100.0%</span></div><br>    </span></span></div>
+            </div>
+        
+            <!-- Message 6 -->
+            <div class="message">
+                <div class="speaker speaker-team-member-a">Team Member A</div>
+                <div class="message-content"><span class="has-tactic tactic-passive-aggressive">Your response was absolutely beyond my expectations.<span class="tooltip-text"><br>        <strong>Sarcasm</strong><br>        <div class="tactic-category">Category: Passive-Aggressive</div><br>        <div class="tactic-purpose">Uses mocking language to indirectly convey contempt and signal that the Team Lead&#x27;s response was highly inappropriate and unprofessional.</div><br>        <div class="tactic-driver">Likely Driver: Ego Protection</div><br>        <div><span>Impact Score: </span><span class="impact-negative">-0.3</span></div><br>        <div><span>Confidence: </span><span>100.0%</span></div><br>    </span></span><br><br>- I haven&#x27;t had a chance to work with [Nominee] directly, so I don&#x27;t know how good he is except from rumours and knowing that he is the master of testing, so I can&#x27;t make a genuine recognition on the [Company Hub].<br>- For your point, in my opinion, which might be wrong, I think no one will be happy from receiving nominations without truly appreciated recognitions. I won&#x27;t go that far for just the sake of winning.<br>- You said you honestly believed, so the question aimed to understand your perspective of a good team member so that I could try to copy his nice qualities to make myself more valuable to the team and avoid the thought that you might show favouritism in my mind. And because I haven&#x27;t received any KPI or OKR, how could I know what you or the company expect?<br>- Your expectations on the last paragraph are acknowledged but still without any actionable examples.<br>- <span class="has-tactic tactic-guiding-the-conversation">I feel your response is a lot more destructive than my original question.<span class="tooltip-text"><br>        <strong>Naming the Dynamic</strong><br>        <div class="tactic-category">Category: Guiding the Conversation</div><br>        <div class="tactic-purpose">Points out the conversational dynamic by highlighting that the lead&#x27;s response was more destructive than the original question, in order to correct the narrative.</div><br>        <div class="tactic-driver">Likely Driver: Ego Protection</div><br>        <div><span>Impact Score: </span><span class="impact-positive">+0.3</span></div><br>        <div><span>Confidence: </span><span>100.0%</span></div><br>    </span></span> <span class="has-tactic tactic-constructive">If even this group is not a safe place where the team could openly discuss things but joke around, I won&#x27;t participate with anything here anymore.<span class="tooltip-text"><br>        <strong>Assertive Boundary Setting</strong><br>        <div class="tactic-category">Category: Constructive &amp; De-escalating</div><br>        <div class="tactic-purpose">Clearly and respectfully states the conditions for participation and the consequences of the leader&#x27;s behavior (creating an unsafe environment).</div><br>        <div class="tactic-driver">Likely Driver: Ego Protection</div><br>        <div><span>Impact Score: </span><span class="impact-positive">+0.1</span></div><br>        <div><span>Confidence: </span><span>100.0%</span></div><br>    </span></span><br><br>PS. I&#x27;m so glad that I finished some work prior to reading the response.</div>
+            </div>
+        
+            <!-- Message 7 -->
+            <div class="message">
+                <div class="speaker speaker-team-lead">Team Lead</div>
+                <div class="message-content">hi [Team Member A], you do have some valid points there. <span class="has-tactic tactic-distortion--deception">There seems to be a bit of miscommunications with the message being conveyed. I first apologise to everyone being involved, but I think it addresses the team culture we&#x27;re all trying to set here<span class="tooltip-text"><br>        <strong>Fauxpology</strong><br>        <div class="tactic-category">Category: Distortion &amp; Deception</div><br>        <div class="tactic-purpose">Offers an insincere apology that avoids responsibility by framing the issue as a simple &quot;miscommunication&quot; before hijacking the conversation to be about &quot;team culture.&quot;</div><br>        <div class="tactic-driver">Likely Driver: Ego Protection</div><br>        <div><span>Impact Score: </span><span class="impact-negative">-0.6</span></div><br>        <div><span>Confidence: </span><span>100.0%</span></div><br>    </span></span>, so here are the key points:<br><br>1. The structure of the [Top Achiever Award] is flawed. The 5 categories nominated (based on the company&#x27;s values) have been changing from time to time. The way of selecting a winner (including the criteria) is not transparent. It mostly falls on the same/similar groups of people<br>2. Our team has never won an award. Different format has been tried (me nominating everyone on the team, cause we all contribute to the same goals).<br>3. [Nominee] was nominated for his [Query Optimization Initiative] last quarter with a cost savings of [$XXX,XXX in savings]. This record is shown in the [Company Hub]&#x27;s company feed, amongst others such as UX Improvements. These are the basis for nomination, which I should&#x27;ve included in previous message (apologies for this one). Unfortunately he did not win the award.<br>4. In my opinion, it would really boost the team&#x27;s morale if one of us gets the award, and since [Nominee] did not win last quarter, for this quarter the cost savings is still accumulating, so this [Query Optimization Initiative] is still valid for this quarter. As a team bonding activity, I thought it would be great if we could join forces and nominate one person.<br>5. This group is definitely open to discuss things. Apologies again if he does not sound great. <span class="has-tactic tactic-social--relational">Just some food for thought, have you thought how [Nominee] would think when he read the original message?<span class="tooltip-text"><br>        <strong>Manipulative Appeal</strong><br>        <div class="tactic-category">Category: Social &amp; Relational</div><br>        <div class="tactic-purpose">Reintroduces guilt by prompting the target to consider the emotional harm they allegedly caused, deflecting from the leader&#x27;s own misconduct.</div><br>        <div class="tactic-driver">Likely Driver: Ego Protection</div><br>        <div><span>Impact Score: </span><span class="impact-negative">-0.5</span></div><br>        <div><span>Confidence: </span><span>100.0%</span></div><br>    </span></span><br>6. I understand now that you would like to know more about [Nominee]&#x27;s contributions. And I do apologise if I misunderstood your intentions. I think there&#x27;re better ways to ask for his contribution or understand the nomination than &quot;make you honestly believe this in comparison with the rest of the team members&quot;. Please reach out to me directly if you&#x27;d like feedback on this one. Again, back to my point of when everyone gets nominated, no one wins. We&#x27;re all part of the team, we know that it&#x27;s flawed, and we should feel happy that one of us gets it, right?</div>
+            </div>
+        
+            <!-- Message 8 -->
+            <div class="message">
+                <div class="speaker speaker-team-member-a">Team Member A</div>
+                <div class="message-content"><span class="has-tactic tactic-guiding-the-conversation">To protect myself and make everything as transparent as it could be.<br>This is what [Team Lead] sent me in 1-on-1 chat this following afternoon.<span class="tooltip-text"><br>        <strong>Naming the Dynamic</strong><br>        <div class="tactic-category">Category: Guiding the Conversation</div><br>        <div class="tactic-purpose">Points out the leader&#x27;s attempt at private manipulation by making the communication public, thereby creating transparency and an evidence trail for protection.</div><br>        <div class="tactic-driver">Likely Driver: Ego Protection</div><br>        <div><span>Impact Score: </span><span class="impact-positive">+0.7</span></div><br>        <div><span>Confidence: </span><span>100.0%</span></div><br>    </span></span><br><br>&gt; hi [Team Member A], I know you do not wish to talk to me right now, and it&#x27;s okay. I&#x27;m always available if you need someone to talk to.<br>&gt; <br>&gt; I just want to apologise again if I did not understand your intention correctly. You have raised valid points, and <span class="has-tactic tactic-distortion--deception">the underlying root cause of this is because there&#x27;s no face-to-face interactions. Teams messages can be interpreted very differently between people.<span class="tooltip-text"><br>        <strong>Blame-Shifting</strong><br>        <div class="tactic-category">Category: Distortion &amp; Deception</div><br>        <div class="tactic-purpose">Unfairly places the blame for the conflict on an external factor (remote communication) rather than accepting personal responsibility for using manipulative language.</div><br>        <div class="tactic-driver">Likely Driver: Ego Protection</div><br>        <div><span>Impact Score: </span><span class="impact-negative">-0.7</span></div><br>        <div><span>Confidence: </span><span>100.0%</span></div><br>    </span></span> If you were to be in the office right now at your usual spot, next to [Nominee], you could&#x27;ve asked him yourself.<br>&gt; <br>&gt; <span class="has-tactic tactic-social--relational">Understandably, with your condition, you cannot commute to the office. This makes it harder to interact, do team work, recognise contributions, be energised and proud of what we do.<span class="tooltip-text"><br>        <strong>Manipulative Appeal</strong><br>        <div class="tactic-category">Category: Social &amp; Relational</div><br>        <div class="tactic-purpose">Appeals to guilt by subtly blaming the target&#x27;s personal &#x27;condition&#x27; and remote status for the conflict, shifting responsibility onto them.</div><br>        <div class="tactic-driver">Likely Driver: Need for Control</div><br>        <div><span>Impact Score: </span><span class="impact-negative">-0.9</span></div><br>        <div><span>Confidence: </span><span>100.0%</span></div><br>    </span></span> Just like when [Team Member C] does the [Frontend Redesign Project], we all gather around (even though we don&#x27;t directly contributed to it), be excited, and show our appreciation for each other.<br>&gt; <br>&gt; <span class="has-tactic tactic-social--relational">On top of this, there&#x27;s a number of people being made redundant today, emotions are very high in the office, and it makes all of this much more difficult. There was someone who had teary eyes and I had to comfort them.<span class="tooltip-text"><br>        <strong>Manipulative Appeal</strong><br>        <div class="tactic-category">Category: Social &amp; Relational</div><br>        <div class="tactic-purpose">Appeals to pity by highlighting personal exhaustion and external crises to excuse their poor behavior and pressure the target to drop their grievances.</div><br>        <div class="tactic-driver">Likely Driver: Fear of Incompetence / Failure</div><br>        <div><span>Impact Score: </span><span class="impact-negative">-0.7</span></div><br>        <div><span>Confidence: </span><span>100.0%</span></div><br>    </span></span><br>&gt; <br>&gt; I am exhausted, physically and mentally. All I could hope for us, in our team, is to support each other, because we&#x27;re all human beings, and after work, we&#x27;re still good friends.<br>&gt; <br>&gt; If you have any feedback or criticism about me, please let me know. I always look for room for improvements, cause I want to be better than just a &quot;manager&quot;.<br>&gt; <br>&gt; Best regards and hope you had a great and relaxing weekend.<br>&gt; [Team Lead&#x27;s Initials]<br><br>I&#x27;m still calmly digesting it as it is a long message.<br>Since I don&#x27;t want to bother anyone more this Friday evening, I will try to solve this properly on Monday.<br><br>PS. <span class="has-tactic tactic-constructive">[Team Lead], I&#x27;m not comfortable discussing things with you without third-party support at this moment.<span class="tooltip-text"><br>        <strong>Assertive Boundary Setting</strong><br>        <div class="tactic-category">Category: Constructive &amp; De-escalating</div><br>        <div class="tactic-purpose">Clearly and respectfully states a limit for future communication, refusing private discussions and demanding a neutral third party to ensure fairness and safety.</div><br>        <div class="tactic-driver">Likely Driver: Desire for Collaboration</div><br>        <div><span>Impact Score: </span><span class="impact-positive">+0.8</span></div><br>        <div><span>Confidence: </span><span>100.0%</span></div><br>    </span></span></div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tactics = document.querySelectorAll('.has-tactic');
+            let activeTactic = null;
+
+            // Function to hide any active tooltip
+            const hideActiveTooltip = () => {
+                if (activeTactic) {
+                    activeTactic.classList.remove('show-tooltip');
+                    activeTactic = null;
+                }
+            };
+
+            tactics.forEach(tactic => {
+                tactic.addEventListener('click', function(event) {
+                    event.stopPropagation(); // Stop click from bubbling up to the document
+                    
+                    // If this tactic is already active, hide it and we're done
+                    if (this.classList.contains('show-tooltip')) {
+                        hideActiveTooltip();
+                    } else {
+                        // Otherwise, hide any other active tooltip first
+                        hideActiveTooltip();
+                        // Then show this one
+                        this.classList.add('show-tooltip');
+                        activeTactic = this;
+                    }
+                });
+            });
+
+            // Add a listener to the whole document to close tooltips when clicking away
+            document.addEventListener('click', function() {
+                hideActiveTooltip();
+            });
+        });
+    </script>
+    
+</body>
+</html>
+    
