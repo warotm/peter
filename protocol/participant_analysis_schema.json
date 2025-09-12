@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Personal Empowerment Through Evidentiary Reclamation Participant Analysis v3.0",
+  "description": "A participant-focused analysis linking behavioral patterns with psychological drivers and recommendations.",
+  "type": "object",
+  "required": [
+    "participants"
+  ],
+  "properties": {
+    "participants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "formalRole",
+          "participantAnalysis"
+        ],
+        "properties": {
+          "name": { "type": "string" },
+          "formalRole": { "type": "string" },
+          "participantAnalysis": {
+            "type": "object",
+            "required": [
+              "behavioralPatterns",
+              "impact",
+              "inferredDrivers",
+              "individualRecommendations"
+            ],
+            "properties": {
+              "behavioralPatterns": { "type": "string" },
+              "impact": { "type": "string" },
+              "inferredDrivers": {
+                "type": "array",
+                "description": "A synthesized list of the primary psychological drivers motivating this participant's behavior.",
+                "items": { "type": "string" }
+              },
+              "individualRecommendations": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

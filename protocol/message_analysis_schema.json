@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Personal Empowerment Through Evidentiary Reclamation Message Analysis v3.0",
+  "description": "A message-by-message tactical analysis of communication tactics and psychological drivers.",
+  "type": "object",
+  "required": [
+    "messageAnalysis"
+  ],
+  "properties": {
+    "messageAnalysis": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "messageID",
+          "speaker",
+          "message",
+          "identifiedTactics"
+        ],
+        "properties": {
+          "messageID": { "type": "integer" },
+          "speaker": { "type": "string" },
+          "message": { "type": "string" },
+          "identifiedTactics": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "quote",
+                "tacticName",
+                "tacticCategory",
+                "speaker",
+                "target",
+                "purpose",
+                "likelyDriver",
+                "impactScore",
+                "confidenceScore"
+              ],
+              "properties": {
+                "quote": { "type": "string" },
+                "tacticName": { "type": "string" },
+                "tacticCategory": { "type": "string" },
+                "speaker": { "type": "string" },
+                "target": { "type": "array", "items": { "type": "string" } },
+                "purpose": {
+                  "type": "string",
+                  "description": "An integrated description of the tactic's goal and its intended impact on the target."
+                },
+                "likelyDriver": {
+                  "type": "string",
+                  "description": "The most probable psychological driver from the library that motivates the tactic."
+                },
+                "impactScore": { "type": "number", "minimum": -1.0, "maximum": 1.0 },
+                "confidenceScore": { "type": "number", "minimum": 0, "maximum": 1 }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

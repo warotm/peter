@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Personal Empowerment Through Evidentiary Reclamation Incident Analysis v3.0",
+  "description": "An incident-level analysis linking organizational risks with communication patterns and psychological drivers.",
+  "type": "object",
+  "required": [
+    "incidentAnalysis"
+  ],
+  "properties": {
+    "incidentAnalysis": {
+      "type": "object",
+      "required": [
+        "executiveSummary",
+        "keyInsights",
+        "organizationalRisks",
+        "organizationalRecommendations"
+      ],
+      "properties": {
+        "executiveSummary": { "type": "string" },
+        "keyInsights": { "type": "array", "items": { "type": "string" } },
+        "organizationalRisks": { "type": "array", "items": { "type": "string" } },
+        "organizationalRecommendations": { "type": "array", "items": { "type": "string" } },
+        "identifiedPatterns": {
+          "type": "array",
+          "description": "Descriptions of multi-tactic conversational patterns observed during the incident.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "patternName": { "type": "string" },
+              "description": { "type": "string" },
+              "messageIDs": { "type": "array", "items": { "type": "integer" } }
+            }
+          }
+        }
+      }
+    }
+  }
+}
